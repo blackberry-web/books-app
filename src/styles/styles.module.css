@@ -22,3 +22,29 @@
     z-index: -1;
     position: relative;
 }
+
+.cardItem {
+    text-align: center;
+    color: black;
+    width: 30rem;
+    border: "primary";
+    background: white !important;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 18px;
+    margin: auto;
+}
+
+.button {
+  background-color: #04AA6D; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 28px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 auto;
+}

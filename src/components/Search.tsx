@@ -1,30 +1,32 @@
 'use client';
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useDebouncedCallback } from 'use-debounce';
 import styles from '../styles/styles.module.css';
 
 const Search = () => {
     const searchParams = useSearchParams();
     const path = usePathname();
     const { replace } = useRouter();
-    const search = (phrase: string) => {
+    const handleSearch = useDebouncedCallback(async (phrase: string) => {
         console.log(`Searching...${phrase}`);
         const params = new URLSearchParams(searchParams);
+        params.set('page', '1');
         if(phrase){
             params.set('query', phrase);
         } else {
             params.delete(phrase);
         }
         replace(`${path}?${params.toString()}`)
-    }
+    }, 1000);
+
     return(
-        <div className="">
-            <input 
-                className={styles.input} 
+        <div>
+            <input
+                className={styles.input}
                 type="text"
                 placeholder='Search...'
-                onChange={(e)=>{search(e.target.value)}}
-                defaultValue={searchParams.get(`${'query'?.toString()}`)!}
-            />
+                onChange={(e) => handleSearch(e.target.value)}
+                defaultValue={searchParams.get('query'?.toString())!} />
         </div>
     )
 }

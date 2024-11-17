@@ -4,6 +4,12 @@ export type SearchParams = {
     sort: string
 }
 
+export type BooksResponse = {
+    "kind": string,
+    "totalItems": number,
+    "items": Book[]
+}
+
 export type Book = {
     "kind": "books#volume",
     "id": string,
