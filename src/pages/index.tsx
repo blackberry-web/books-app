@@ -1,53 +1,84 @@
-import React, { useEffect, useState } from "react";
-import { Suspense } from 'react';
-import Image from 'next/image';
-import Search from "@/components/Search";
 import styles from '../styles/styles.module.css';
-import BooksList from "@/components/BooksList";
-import { SearchParams } from "@/types";
+import Image from 'next/image';
+import { BooksResponse } from "@/types";
+import { GetServerSideProps } from 'next';
+import Search from '@/components/Search';
+import Link from 'next/link';
+import Button from 'react-bootstrap/Button';
+import Card from "react-bootstrap/Card";
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import { Container } from 'react-bootstrap';
+import 'dotenv/config';
+import Pagination from '@/components/Pagination';
 
-const Index = (props: { searchParams?: Promise<SearchParams>}) => {
-    const [data, setData] = useState({query:  '', page: '1', sort: 'asc'});
-    useEffect(() => {
-        try {
-        const setSearchParams = (async (): Promise<void> => {
-            if(props.searchParams){
-            const params = await props.searchParams;
-            setData(params as SearchParams);
-            }
-            setSearchParams();
-        })
-        } catch(err: unknown) {
-            console.error(err);
-        }
-    }, [data])
-    const query = data.query;
-    const currentPage = Number(data.page);
+export const getServerSideProps: GetServerSideProps = async(context) => {
+    const { query } = context;
+    const searchPhrase = query.query || '';
+    const url = `${process.env.API_URL}/volumes?q=${query.query}&key=${process.env.API_KEY}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (!data) {
+        return {
+            notFound: true,
+        };
+    }
+    return { props: { 
+        data,
+        searchPhrase,
+    }}
+}
 
-    const allSearchResults = () => {}
+const Index = ({ data, searchPhrase }: { data: BooksResponse, searchPhrase: string}) => {
+    const ITEMS_PER_PAGE = 10;
+    const totalPages = Math.ceil(data.totalItems / ITEMS_PER_PAGE) ?? 1;
     return(
         <div>
-            <h1 className={styles.h1}>Books Catalog</h1>
-            <div>
+            <div className={styles.imageContainer}>
             <Image
-                src="https://images.unsplash.com/photo-1536965764833-5971e0abed7c?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={process.env.BGIMAGE!}
                 alt="Main theme"
                 quality={100}
+                placeholder="blur"
+                blurDataURL={`${process.env.BGIMAGE}`}
                 fill
                 sizes="100vw"
                 style={{
-                objectFit: 'cover',
+                    objectFit: 'cover',
                 }}
-                className={styles.background_image}
             />
             </div>
-            <Suspense>
-              <Search />
-            </Suspense>
-            <Suspense>
-              <BooksList query={query} currentPage={currentPage}/>
-            </Suspense>
-        </div>
+            <h1 className={styles.h1}>Books Catalog</h1>
+            <Search />
+            <div>
+                <Container fluid="md" className={styles.container}>
+                {data && data.items.map((item, index) => {
+                return (
+                <Row key={item.id}>
+                        <Col>
+                        <Card key={index} className={styles.cardItem}>
+                            <Card.Img variant="top" src={item.volumeInfo.imageLinks.smallThumbnail}/>
+                            <Card.Body>
+                                <Card.Title><strong>{item.volumeInfo.title}</strong></Card.Title>
+                                <Card.Subtitle>{item.volumeInfo.subtitle}</Card.Subtitle>
+                                <Card.Text>
+                                {item.volumeInfo.authors}
+                                </Card.Text>
+                                <Link href={item.volumeInfo.previewLink} target="_blank">
+                                    <Button className={styles.button}>
+                                        Details
+                                    </Button>
+                                </Link>
+                            </Card.Body>
+                        </Card>
+                        </Col>
+                    </Row>
+                    );
+                })}
+                </Container>
+            </div>
+            <Pagination totalPages={totalPages} query={searchPhrase}/>
+    </div>
     )
 } 
 

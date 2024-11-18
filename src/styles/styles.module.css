@@ -2,7 +2,7 @@
     width: 75%;
     padding: 12px 20px;
     margin-top: 10px;
-    margin-left: 200px;
+    margin-left: 185px;
     box-sizing: border-box;
     background-color: white;
     cursor: pointer;
@@ -16,11 +16,25 @@
     'Arial', sans-serif;
     font-weight: bold;
     color: white;
+    margin: 0;
+    text-shadow: 1px 1px 1px #3c5c5e;
+    padding-top: 5vh;
+}
+
+.imageContainer {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    z-index: -1;
 }
 
 .background_image {
     z-index: -1;
     position: relative;
+    min-height: 100vh;
+    min-width: 100vw;
+    background-size: cover;
 }
 
 .cardItem {
@@ -28,15 +42,19 @@
     color: black;
     width: 30rem;
     border: "primary";
-    background: white !important;
-    justify-content: center;
-    align-items: center;
-    padding: 30px 18px;
+    background: #C4A484;
+    padding: 20px 15px;
     margin: auto;
+    border-radius: 10px;
+    display: 'flex';
+    margin-bottom: 20px;
+    margin-top: 20px;
+    display: 'flex';
+    flex-direction: column;
 }
 
 .button {
-  background-color: #04AA6D; /* Green */
+  background-color: #04AA6D;
   border: none;
   color: white;
   padding: 10px 28px;
@@ -48,3 +66,58 @@
   cursor: pointer;
   margin: 0 auto;
 }
+
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    grid-template-columns: "repeat(2, 1fr)";
+    align-items: flex-start;
+    align-content: baseline;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    list-style: none;
+}
+
+.pageLink {
+    cursor: pointer;
+}
+
+.pageItem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
+    padding: 0.5rem 0.5rem;
+}
+
+.pageItemActive {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: black;
+    background-color:#eaeaea;
+}
+
+.paginationButton {
+    background-color:#eaeaea;
+    color: black;
+    padding: 7px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    font-family: "Ysabeau Infant", sans-serif;
+    border-radius: 2px;
+    cursor: pointer;
+    margin: 10px;
+  }
