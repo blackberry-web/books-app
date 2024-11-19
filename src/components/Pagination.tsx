@@ -3,13 +3,13 @@ import { useRouter } from "next/router";
 import styles from '../styles/styles.module.css';
 import Link from "next/link";
 
-const Pagination = ({totalPages, query} : {totalPages: number, query: string}) => {
+const Pagination = ({query, totalPages} : {query: string, totalPages: number}) => {
     const path = usePathname();
     const searchParams = useSearchParams();
-    const router = useRouter()
-    const currentPage = Number(searchParams.get('page')) || 1;
-    const pagesArray = Array.from({length: totalPages}, (_, i) => i + 1);
-
+    const router = useRouter();
+    const clickedPage = Number(searchParams.get('page')) || 1;
+    const totalPagesArray = Array.from({length: totalPages}, (_, i) => i + 1);
+    const pagesArray = totalPagesArray.slice(clickedPage - 1, clickedPage + 2);
     const createURL = (page: string | number) => {
         const params = new URLSearchParams();
         if(query){
@@ -24,14 +24,21 @@ const Pagination = ({totalPages, query} : {totalPages: number, query: string}) =
     return(
         <div>
             <ul className={styles.pagination}>
-                <Link href={createURL(currentPage-1)} className={styles.paginationButton}>Previous</Link>
+                <Link href={createURL(1)} className={styles.paginationButton}>«</Link>
+                {clickedPage > 1 && 
+                <Link href={createURL(clickedPage - 1)} 
+                    className={styles.paginationButton}>Previous
+                </Link>}
                 {pagesArray.map((page, index) => {
                 return (
-                    <li key={index} className={page === currentPage ? styles.pageItemActive : styles.pageItem}>
+                    <li key={index} className={page === clickedPage ? styles.pageItemActive : styles.pageItem}>
                     <a onClick={() => router.push(createURL(page))} className={styles.pageLink}>{page}</a>
                 </li>
                 )})}
-                <Link href={createURL(currentPage+1)} className={styles.paginationButton}>Next</Link>
+                {clickedPage < totalPages && 
+                <Link href={createURL(clickedPage + 1)} className={styles.paginationButton}>Next
+                </Link>}
+                <Link href={createURL(totalPagesArray.at(-1)!)} className={styles.paginationButton}>»</Link>
             </ul>
         </div>
     )

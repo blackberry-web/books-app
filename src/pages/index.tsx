@@ -9,29 +9,36 @@ import Card from "react-bootstrap/Card";
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Container } from 'react-bootstrap';
-import 'dotenv/config';
 import Pagination from '@/components/Pagination';
+import { getAllSearchResults } from '@/helpers/utils';
+import 'dotenv/config';
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
+    const ITEMS_PER_PAGE: number = 10;
     const { query } = context;
+    const currentPage = query.page || 1;
     const searchPhrase = query.query || '';
-    const url = `${process.env.API_URL}/volumes?q=${query.query}&key=${process.env.API_KEY}`;
-    const response = await fetch(url);
+    const startIndex = (Number(currentPage) - 1) * 10;
+    const allSearchResults = await getAllSearchResults(searchPhrase);
+    const totalPages = Math.ceil(allSearchResults / ITEMS_PER_PAGE) || 1;
+    const paginationUrl = `${process.env.API_URL}/volumes?q=${query.query}&startIndex=${startIndex}&key=${process.env.API_KEY}`;
+    const response = await fetch(paginationUrl);
     const data = await response.json();
+
     if (!data) {
         return {
-            notFound: true,
-        };
+          notFound: true,
+        }
     }
+
     return { props: { 
         data,
         searchPhrase,
+        totalPages
     }}
 }
 
-const Index = ({ data, searchPhrase }: { data: BooksResponse, searchPhrase: string}) => {
-    const ITEMS_PER_PAGE = 10;
-    const totalPages = Math.ceil(data.totalItems / ITEMS_PER_PAGE) ?? 1;
+const Index = ({ data, searchPhrase, totalPages }: { data: BooksResponse, searchPhrase: string, totalPages: number }) => {
     return(
         <div>
             <div className={styles.imageContainer}>
@@ -52,19 +59,19 @@ const Index = ({ data, searchPhrase }: { data: BooksResponse, searchPhrase: stri
             <Search />
             <div>
                 <Container fluid="md" className={styles.container}>
-                {data && data.items.map((item, index) => {
+                {data && data.items?.map((item, index) => {
                 return (
                 <Row key={item.id}>
                         <Col>
                         <Card key={index} className={styles.cardItem}>
-                            <Card.Img variant="top" src={item.volumeInfo.imageLinks.smallThumbnail}/>
+                            <Card.Img variant="top" src={item.volumeInfo?.imageLinks?.smallThumbnail}/>
                             <Card.Body>
-                                <Card.Title><strong>{item.volumeInfo.title}</strong></Card.Title>
-                                <Card.Subtitle>{item.volumeInfo.subtitle}</Card.Subtitle>
+                                <Card.Title><strong>{item.volumeInfo?.title}</strong></Card.Title>
+                                <Card.Subtitle>{item.volumeInfo?.subtitle}</Card.Subtitle>
                                 <Card.Text>
-                                {item.volumeInfo.authors}
+                                {item.volumeInfo?.authors}
                                 </Card.Text>
-                                <Link href={item.volumeInfo.previewLink} target="_blank">
+                                <Link href={item.volumeInfo?.previewLink} target="_blank">
                                     <Button className={styles.button}>
                                         Details
                                     </Button>
@@ -77,7 +84,7 @@ const Index = ({ data, searchPhrase }: { data: BooksResponse, searchPhrase: stri
                 })}
                 </Container>
             </div>
-            <Pagination totalPages={totalPages} query={searchPhrase}/>
+            <Pagination query={searchPhrase} totalPages={totalPages}/>
     </div>
     )
 } 
