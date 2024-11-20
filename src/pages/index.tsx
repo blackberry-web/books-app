@@ -14,14 +14,17 @@ import { getAllSearchResults } from '@/helpers/utils';
 import 'dotenv/config';
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
+    let totalPages: number = 1;
     const ITEMS_PER_PAGE: number = 10;
     const { query } = context;
     const currentPage = query.page || 1;
     const searchPhrase = query.query || '';
     const startIndex = (Number(currentPage) - 1) * 10;
-    const allSearchResults = await getAllSearchResults(searchPhrase);
-    const totalPages = Math.ceil(allSearchResults / ITEMS_PER_PAGE) || 1;
-    const paginationUrl = `${process.env.API_URL}/volumes?q=${query.query}&startIndex=${startIndex}&key=${process.env.API_KEY}`;
+    if(query.query){
+        const allSearchResults = await getAllSearchResults(query.query);
+        totalPages = Math.ceil(allSearchResults / ITEMS_PER_PAGE);
+    }
+    const paginationUrl = `${process.env.API_URL}/volumes?q=${searchPhrase}&startIndex=${startIndex}&key=${process.env.API_KEY}&orderBy=newest`;
     const response = await fetch(paginationUrl);
     const data = await response.json();
 
@@ -31,7 +34,8 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         }
     }
 
-    return { props: { 
+    return { 
+    props: { 
         data,
         searchPhrase,
         totalPages
@@ -84,7 +88,7 @@ const Index = ({ data, searchPhrase, totalPages }: { data: BooksResponse, search
                 })}
                 </Container>
             </div>
-            <Pagination query={searchPhrase} totalPages={totalPages}/>
+            {data.items && <Pagination query={searchPhrase} totalPages={totalPages}/>}
     </div>
     )
 } 

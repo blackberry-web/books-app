@@ -74,7 +74,6 @@
     justify-content: space-evenly;
     grid-template-columns: "repeat(2, 1fr)";
     align-items: flex-start;
-    align-content: baseline;
 }
 
 .pagination {
@@ -83,6 +82,10 @@
     align-items: center;
     color: white;
     list-style: none;
+    bottom: 0;
+    right: 50%;
+    left: 50%;
+    position: fixed;
 }
 
 .pageLink {
@@ -104,10 +107,10 @@
     justify-content: center;
     align-items: center;
     width: 2rem;
-    height: 2rem;
+    height: 1rem;
     cursor: pointer;
     color: black;
-    padding: 0.2rem 0.2rem;
+    padding: 0.5rem 0.5rem;
     background-color:#eaeaea;
 }
 

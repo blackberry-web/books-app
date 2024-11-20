@@ -10,12 +10,12 @@ const Search = () => {
     const handleSearch = useDebouncedCallback(async (phrase: string) => {
         console.log(`Searching...${phrase}`);
         const params = new URLSearchParams(searchParams);
-        params.set('page', '1');
         if(phrase){
             params.set('query', phrase);
         } else {
             params.delete(phrase);
         }
+        params.set('page', '1');
         replace(`${path}?${params.toString()}`)
     }, 1000);
 
