@@ -19,6 +19,7 @@
     margin: 0;
     text-shadow: 1px 1px 1px #3c5c5e;
     padding-top: 5vh;
+    cursor: pointer;
 }
 
 .imageContainer {

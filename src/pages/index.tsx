@@ -12,6 +12,7 @@ import { Container } from 'react-bootstrap';
 import Pagination from '@/components/Pagination';
 import { getAllSearchResults } from '@/helpers/utils';
 import 'dotenv/config';
+import { useRouter } from 'next/router';
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
     let totalPages: number = 1;
@@ -20,13 +21,13 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
     const currentPage = query.page || 1;
     const searchPhrase = query.query || '';
     const startIndex = (Number(currentPage) - 1) * 10;
-    if(query.query){
+    if (query.query) {
         const allSearchResults = await getAllSearchResults(query.query);
         totalPages = Math.ceil(allSearchResults / ITEMS_PER_PAGE);
     }
     const paginationUrl = `${process.env.API_URL}/volumes?q=${searchPhrase}&startIndex=${startIndex}&key=${process.env.API_KEY}&orderBy=newest`;
     const response = await fetch(paginationUrl);
-    const data = await response.json();
+    const data = await response.json() ?? [];
 
     if (!data) {
         return {
@@ -43,6 +44,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
 }
 
 const Index = ({ data, searchPhrase, totalPages }: { data: BooksResponse, searchPhrase: string, totalPages: number }) => {
+    const router = useRouter();
     return(
         <div>
             <div className={styles.imageContainer}>
@@ -59,7 +61,7 @@ const Index = ({ data, searchPhrase, totalPages }: { data: BooksResponse, search
                 }}
             />
             </div>
-            <h1 className={styles.h1}>Books Catalog</h1>
+            <h1 className={styles.h1} onClick={() => router.push('/')}>Books Catalog</h1>
             <Search />
             <div>
                 <Container fluid="md" className={styles.container}>

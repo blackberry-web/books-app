@@ -13,7 +13,7 @@ const Search = () => {
         if(phrase){
             params.set('query', phrase);
         } else {
-            params.delete(phrase);
+            params.set('query', '');
         }
         params.set('page', '1');
         replace(`${path}?${params.toString()}`)
@@ -26,6 +26,7 @@ const Search = () => {
                 type="text"
                 placeholder='Search...'
                 onChange={(e) => handleSearch(e.target.value)}
+                onKeyDown={(e) => handleSearch((e.target as HTMLInputElement).value)}
                 defaultValue={searchParams.get('query'?.toString())!} />
         </div>
     )
