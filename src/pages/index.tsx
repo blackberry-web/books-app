@@ -49,11 +49,11 @@ const Index = ({ data, searchPhrase, totalPages }: { data: BooksResponse, search
         <div>
             <div className={styles.imageContainer}>
             <Image
-                src={process.env.BGIMAGE!}
+                src="https://images.unsplash.com/photo-1536965764833-5971e0abed7c?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Main theme"
                 quality={100}
                 placeholder="blur"
-                blurDataURL={`${process.env.BGIMAGE}`}
+                blurDataURL="https://images.unsplash.com/photo-1536965764833-5971e0abed7c?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 fill
                 sizes="100vw"
                 style={{

@@ -38,7 +38,7 @@ const Pagination = ({query, totalPages} : {query: string, totalPages: number}) =
                 {clickedPage < totalPages && 
                 <Link href={createURL(clickedPage + 1)} className={styles.paginationButton}>Next
                 </Link>}
-                <Link href={createURL(totalPagesArray.at(-1)!)} className={styles.paginationButton}>»</Link>
+                <Link href={createURL(totalPagesArray.at(-1) ?? 1)} className={styles.paginationButton}>»</Link>
             </ul>
         </div>
     )
